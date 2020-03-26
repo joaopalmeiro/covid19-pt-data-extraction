@@ -9,26 +9,65 @@ library(tidyverse)
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- "i026070.pdf"
-DATA_NAME <- paste(Sys.Date(), "csv", sep=".")
+PDF_NAME <- "i026077.pdf"
+DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
 DATA_PATH <- file.path(DATA_FOLDER_NAME, DATA_NAME)
 
-doc <- str_squish(strsplit(pdf_text(PDF_PATH)[[3]], "\n")[[1]])
+PAGE_NUMBER <- 3
+
+doc <-
+  str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 doc
 
-BEGIN <- 6
-FOOTNOTE <- 39
-DATE <-  42
+BEGIN <- 8
+FOOTNOTE <- 67
 
-doc <- doc[c(BEGIN:(FOOTNOTE-1), (FOOTNOTE+1):(DATE-1))]
+doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
 doc
 
-doc_pre_table <- unlist(str_extract_all(doc, "([:alpha:][[:alpha:]\\s\\-()]+)\\s([[:digit:]]+)"))
+mask_concelho <- !is.na(str_match(doc, "[[:alpha:]()]$"))
+mask_casos <-
+  !is.na(str_match(doc, "^[:digit:]$|[:digit:]\\s[:digit:]$"))
+
+doc[mask_concelho]
+
+matched <-
+  unlist(str_extract_all(doc[mask_concelho], "([:alpha:][[:alpha:]\\s\\-().]+)\\s([[:digit:]]+)"))
+
+matched_pattern <- paste(matched, collapse = "|")
+matched_pattern
+
+missing_concelhos <-
+  str_remove_all(doc[mask_concelho], matched_pattern)
+missing_concelhos
+
+missing_concelhos_name <-
+  paste(missing_concelhos[seq(length(missing_concelhos)) %% 2 == 1], missing_concelhos[seq(length(missing_concelhos)) %% 2 == 0])
+missing_concelhos_name <- str_squish(missing_concelhos_name)
+missing_concelhos_name
+
+doc[mask_casos]
+
+missing_concelhos_casos <-
+  unlist(str_extract_all(doc[mask_casos], "[:digit:]$"))
+missing_concelhos_casos
+
+concelhos_casos <-
+  paste(missing_concelhos_name, missing_concelhos_casos)
+concelhos_casos
+
+doc_pre_table <-
+  unlist(str_extract_all(doc, "([:alpha:][[:alpha:]\\s\\-().]+)\\s([[:digit:]]+)"))
 doc_pre_table
 
-df <- enframe(doc_pre_table, name = NULL) %>% separate(value, c("concelho", "n_casos"), "\\s(?=[^\\s]+$)")
+doc_pre_table <- append(doc_pre_table, concelhos_casos)
+
+df <-
+  enframe(doc_pre_table, name = NULL) %>% separate(value, c("concelho", "n_casos"), "\\s(?=[^\\s]+$)", convert = TRUE)
+df <-
+  df %>% mutate(concelho = replace(concelho, concelho == "Velho", "Montemor-o-Velho")) %>% arrange(desc(n_casos), concelho)
 df
 
 # write_csv(df, DATA_PATH)
