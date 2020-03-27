@@ -9,7 +9,7 @@ library(tidyverse)
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- "i026077.pdf"
+PDF_NAME <- "i026078.pdf"
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
