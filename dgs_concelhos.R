@@ -9,7 +9,7 @@ library(tidyverse)
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- "i026078.pdf"
+PDF_NAME <- "i026082.pdf"
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
@@ -22,7 +22,7 @@ doc <-
 doc
 
 BEGIN <- 8
-FOOTNOTE <- 67
+FOOTNOTE <- 74
 
 doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
 doc
@@ -33,41 +33,45 @@ mask_casos <-
 
 doc[mask_concelho]
 
-matched <-
-  unlist(str_extract_all(doc[mask_concelho], "([:alpha:][[:alpha:]\\s\\-().]+)\\s([[:digit:]]+)"))
-
-matched_pattern <- paste(matched, collapse = "|")
-matched_pattern
-
-missing_concelhos <-
-  str_remove_all(doc[mask_concelho], matched_pattern)
-missing_concelhos
-
-missing_concelhos_name <-
-  paste(missing_concelhos[seq(length(missing_concelhos)) %% 2 == 1], missing_concelhos[seq(length(missing_concelhos)) %% 2 == 0])
-missing_concelhos_name <- str_squish(missing_concelhos_name)
-missing_concelhos_name
-
-doc[mask_casos]
-
-missing_concelhos_casos <-
-  unlist(str_extract_all(doc[mask_casos], "[:digit:]$"))
-missing_concelhos_casos
-
-concelhos_casos <-
-  paste(missing_concelhos_name, missing_concelhos_casos)
-concelhos_casos
+# matched <-
+#   unlist(str_extract_all(doc[mask_concelho], "([:alpha:][[:alpha:]\\s\\-().]+)\\s([[:digit:]]+)"))
+#
+# matched_pattern <- paste(matched, collapse = "|")
+# matched_pattern
+#
+# missing_concelhos <-
+#   str_remove_all(doc[mask_concelho], matched_pattern)
+# missing_concelhos
+#
+# missing_concelhos_name <-
+#   paste(missing_concelhos[seq(length(missing_concelhos)) %% 2 == 1], missing_concelhos[seq(length(missing_concelhos)) %% 2 == 0])
+# missing_concelhos_name <- str_squish(missing_concelhos_name)
+# missing_concelhos_name
+#
+# doc[mask_casos]
+#
+# missing_concelhos_casos <-
+#   unlist(str_extract_all(doc[mask_casos], "[:digit:]$"))
+# missing_concelhos_casos
+#
+# concelhos_casos <-
+#   paste(missing_concelhos_name, missing_concelhos_casos)
+# concelhos_casos
 
 doc_pre_table <-
   unlist(str_extract_all(doc, "([:alpha:][[:alpha:]\\s\\-().]+)\\s([[:digit:]]+)"))
 doc_pre_table
 
-doc_pre_table <- append(doc_pre_table, concelhos_casos)
+# doc_pre_table <- append(doc_pre_table, concelhos_casos)
 
 df <-
   enframe(doc_pre_table, name = NULL) %>% separate(value, c("concelho", "n_casos"), "\\s(?=[^\\s]+$)", convert = TRUE)
 df <-
-  df %>% mutate(concelho = replace(concelho, concelho == "Velho", "Montemor-o-Velho")) %>% arrange(desc(n_casos), concelho)
+  df %>% mutate(
+    concelho = replace(concelho, concelho == "Macedo de", "Macedo de Cavaleiros"),
+    concelho = replace(concelho, concelho == "Torre de", "Torre de Moncorvo")
+  ) %>% arrange(desc(n_casos), concelho)
 df
 
+DATA_PATH
 # write_csv(df, DATA_PATH)
