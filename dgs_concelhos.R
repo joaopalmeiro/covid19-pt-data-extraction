@@ -9,7 +9,7 @@ library(tidyverse)
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- "i026082.pdf"
+PDF_NAME <- "i026084.pdf"
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
@@ -22,12 +22,14 @@ doc <-
 doc
 
 BEGIN <- 8
-FOOTNOTE <- 74
+FOOTNOTE <- 77
+
+MIN_NUMBER_CASES <- 3
 
 doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
 doc
 
-mask_concelho <- !is.na(str_match(doc, "[[:alpha:]()]$"))
+mask_concelho <- !is.na(str_match(doc, "[[:alpha:]()\\.]$"))
 mask_casos <-
   !is.na(str_match(doc, "^[:digit:]$|[:digit:]\\s[:digit:]$"))
 
@@ -58,20 +60,33 @@ doc[mask_concelho]
 #   paste(missing_concelhos_name, missing_concelhos_casos)
 # concelhos_casos
 
+# ++ -> 1 or more, possessive
 doc_pre_table <-
-  unlist(str_extract_all(doc, "([:alpha:][[:alpha:]\\s\\-().]+)\\s([[:digit:]]+)"))
+  unlist(
+    str_extract_all(
+      doc,
+      "([:alpha:][[:alpha:]\\s\\-()\\.\\*]+)\\s([[:digit:]]++(?!\\%))"
+    )
+  )
 doc_pre_table
+length(doc_pre_table)
 
 # doc_pre_table <- append(doc_pre_table, concelhos_casos)
 
 df <-
-  enframe(doc_pre_table, name = NULL) %>% separate(value, c("concelho", "n_casos"), "\\s(?=[^\\s]+$)", convert = TRUE)
-df <-
-  df %>% mutate(
-    concelho = replace(concelho, concelho == "Macedo de", "Macedo de Cavaleiros"),
-    concelho = replace(concelho, concelho == "Torre de", "Torre de Moncorvo")
-  ) %>% arrange(desc(n_casos), concelho)
+  enframe(doc_pre_table, name = NULL) %>%
+  separate(value, c("concelho", "n_casos"), "\\s(?=[^\\s]+$)", convert = TRUE) %>%
+  separate(concelho, c("concelho", "reportado_por_ARS_RA"), "\\*", convert = FALSE) %>%
+  mutate(reportado_por_ARS_RA = if_else(is.na(reportado_por_ARS_RA), as.integer(0), as.integer(1))) %>%
+  arrange(desc(n_casos), concelho)
+# df <-
+#   df %>% mutate(
+#     concelho = replace(concelho, concelho == "Macedo de", "Macedo de Cavaleiros"),
+#     concelho = replace(concelho, concelho == "Torre de", "Torre de Moncorvo")
+#   ) %>% arrange(desc(n_casos), concelho)
 df
+
+min(df$n_casos) >= MIN_NUMBER_CASES
 
 DATA_PATH
 # write_csv(df, DATA_PATH)
