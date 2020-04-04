@@ -6,10 +6,13 @@ library(pdftools)
 library(stringr)
 library(tidyverse)
 
+Sys.Date()
+
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- "i026097.pdf"
+PDF_NAME <- paste("i026123", "pdf", sep = ".")
+PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
 
@@ -22,8 +25,8 @@ doc <-
   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 doc
 
-BEGIN <- 10
-FOOTNOTE <- 84
+BEGIN <- 12
+FOOTNOTE <- 68
 
 MIN_NUMBER_CASES <- 3
 
@@ -100,17 +103,21 @@ length(doc_pre_table)
 df <-
   enframe(doc_pre_table, name = NULL) %>%
   separate(value, c("concelho", "n_casos"), "\\s(?=[^\\s]+$)", convert = TRUE) %>%
-  separate(concelho,
-           c("concelho", "reportado_por_ARS_RA"),
-           "\\*",
-           convert = FALSE) %>%
-  mutate(reportado_por_ARS_RA = if_else(is.na(reportado_por_ARS_RA), as.integer(0), as.integer(1))) %>%
+  # separate(concelho,
+  #          c("concelho", "reportado_por_ARS_RA"),
+  #          "\\*",
+  #          convert = FALSE) %>%
+  # mutate(reportado_por_ARS_RA = if_else(is.na(reportado_por_ARS_RA), as.integer(0), as.integer(1))) %>%
   arrange(desc(n_casos), concelho)
 # df <-
 #   df %>% mutate(
-#     concelho = replace(concelho, concelho == "Macedo de", "Macedo de Cavaleiros"),
-#     concelho = replace(concelho, concelho == "Torre de", "Torre de Moncorvo")
-#   ) %>% arrange(desc(n_casos), concelho)
+#     concelho = replace(concelho, concelho == "Famalicão", "Vila Nova de Famalicão"),
+#     concelho = replace(concelho, concelho == "António", "Vila Real de Santo António"),
+#     concelho = replace(concelho, concelho == "Cavaleiros", "Macedo de Cavaleiros"),
+#     concelho = replace(concelho, concelho == "Vitória", "Vila da Praia da Vitória"),
+#     concelho = replace(concelho, concelho == "Monsaraz", "Reguengos de Monsaraz")
+#   ) %>%
+#   arrange(desc(n_casos), concelho)
 df
 
 # Assertion(s)
