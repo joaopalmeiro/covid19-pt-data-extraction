@@ -13,3 +13,7 @@ As datas, que constituem os nomes dos vários conjuntos de dados, coincidem com 
 ## Nomenclatura dos concelhos
 
 - `Vila Real de Santo António` == `V. R. S. António`.
+
+## Potenciais problemas
+
+- `2020-04-02.csv`: O `concelho`de `Penacova` surge duas vezes com `n_casos` distintos.
