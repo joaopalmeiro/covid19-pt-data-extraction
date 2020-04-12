@@ -11,7 +11,7 @@ Sys.Date()
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- paste("31_DGS_boletim_20200402", "pdf", sep = ".")
+PDF_NAME <- paste("32_DGS_boletim_20200403", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
@@ -25,8 +25,8 @@ doc <-
   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 doc
 
-BEGIN <- 13
-FOOTNOTE <- 65
+BEGIN <- 10
+FOOTNOTE <- 87
 
 MIN_NUMBER_CASES <- 3
 
@@ -109,21 +109,16 @@ df <-
   #          convert = FALSE) %>%
   # mutate(reportado_por_ARS_RA = if_else(is.na(reportado_por_ARS_RA), as.integer(0), as.integer(1))) %>%
   arrange(desc(n_casos), concelho)
-df <-
-  df %>% mutate(
-    concelho = replace(concelho, concelho == "António", "Vila Real de Santo António"),
-    concelho = replace(
-      concelho,
-      concelho == "Vila Real de Santo Monsaraz",
-      "Reguengos de Monsaraz"
-    )
-    
-    #     concelho = replace(concelho, concelho == "Famalicão", "Vila Nova de Famalicão"),
-    #     concelho = replace(concelho, concelho == "Cavaleiros", "Macedo de Cavaleiros"),
-    #     concelho = replace(concelho, concelho == "Vitória", "Vila da Praia da Vitória"),
-    #     concelho = replace(concelho, concelho == "Monsaraz", "Reguengos de Monsaraz")
-  ) %>%
-  arrange(desc(n_casos), concelho)
+# df <-
+#   df %>% mutate(
+#     concelho = replace(concelho, concelho == "António", "Vila Real de Santo António"),
+#     concelho = replace(
+#       concelho,
+#       concelho == "Vila Real de Santo Monsaraz",
+#       "Reguengos de Monsaraz"
+#     )
+#   ) %>%
+#   arrange(desc(n_casos), concelho)
 df
 
 nrow(df)
@@ -132,12 +127,14 @@ nrow(df)
 length(doc_pre_table) == nrow(df)
 min(df$n_casos) >= MIN_NUMBER_CASES
 
-duplicated_concelhos <- df %>% group_by(concelho) %>% filter(n() > 1)
+duplicated_concelhos <-
+  df %>% group_by(concelho) %>% filter(n() > 1)
 
 if (nrow(duplicated_concelhos) > 0) {
   duplicated_concelhos
 } else {
-  nrow(duplicated_concelhos) == 0
+  # nrow(duplicated_concelhos) == 0
+  cat("No duplicates.")
 }
 
 DATA_PATH
