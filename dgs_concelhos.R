@@ -11,7 +11,7 @@ Sys.Date()
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- paste("32_DGS_boletim_20200403", "pdf", sep = ".")
+PDF_NAME <- paste("33_DGS_boletim_20200404", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
@@ -25,8 +25,8 @@ doc <-
   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 doc
 
-BEGIN <- 10
-FOOTNOTE <- 87
+BEGIN <- 13
+FOOTNOTE <- 89
 
 MIN_NUMBER_CASES <- 3
 
@@ -109,16 +109,9 @@ df <-
   #          convert = FALSE) %>%
   # mutate(reportado_por_ARS_RA = if_else(is.na(reportado_por_ARS_RA), as.integer(0), as.integer(1))) %>%
   arrange(desc(n_casos), concelho)
-# df <-
-#   df %>% mutate(
-#     concelho = replace(concelho, concelho == "António", "Vila Real de Santo António"),
-#     concelho = replace(
-#       concelho,
-#       concelho == "Vila Real de Santo Monsaraz",
-#       "Reguengos de Monsaraz"
-#     )
-#   ) %>%
-#   arrange(desc(n_casos), concelho)
+df <-
+  df %>% mutate(concelho = replace(concelho, concelho == "António", "Vila Real de Santo António")) %>%
+  arrange(desc(n_casos), concelho)
 df
 
 nrow(df)
