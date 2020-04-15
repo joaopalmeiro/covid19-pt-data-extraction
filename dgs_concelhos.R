@@ -11,7 +11,7 @@ Sys.Date()
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- paste("33_DGS_boletim_20200404", "pdf", sep = ".")
+PDF_NAME <- paste("34_DGS_boletim_20200406", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
@@ -25,8 +25,8 @@ doc <-
   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 doc
 
-BEGIN <- 13
-FOOTNOTE <- 89
+BEGIN <- 9
+FOOTNOTE <- 98
 
 MIN_NUMBER_CASES <- 3
 
