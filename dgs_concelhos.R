@@ -5,13 +5,14 @@
 library(pdftools)
 library(stringr)
 library(tidyverse)
+library(tabulizer)
 
 Sys.Date()
 
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- paste("36_DGS_boletim_20200407_2", "pdf", sep = ".")
+PDF_NAME <- paste("38_DGS_boletim_20200409_VERSÃO-FINAL", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
@@ -21,12 +22,20 @@ DATA_PATH <- file.path(DATA_FOLDER_NAME, DATA_NAME)
 
 PAGE_NUMBER <- 3
 
+# df_data <- pdf_data(PDF_PATH)[[PAGE_NUMBER]]
+# df_data
+
+# pdf_text(PDF_PATH)[[PAGE_NUMBER]]
+
+df_tabulizer <- strsplit(extract_text(PDF_PATH, pages = PAGE_NUMBER), "\n")[[1]]
+df_tabulizer
+
 doc <-
   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 doc
 
-BEGIN <- 10
-FOOTNOTE <- 104
+BEGIN <- 8
+FOOTNOTE <- 108
 
 MIN_NUMBER_CASES <- 3
 
