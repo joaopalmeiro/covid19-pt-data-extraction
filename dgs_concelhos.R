@@ -13,7 +13,7 @@ PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("38_DGS_boletim_20200409_VERSÃO-FINAL", "pdf", sep = ".")
+  paste("39_DGS_boletim_20200410", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
@@ -45,23 +45,25 @@ concat_broke_down_concelhos <- function(df) {
   return(concat_concelhos)
 }
 
-concelhos_to_add <- concat_broke_down_concelhos(df_tabulizer)
-concelhos_to_add
-
-doc <- c(df_tabulizer, concelhos_to_add)
-doc
+doc <- df_tabulizer
 
 # doc <-
 #   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 # doc
 
 BEGIN <- 14
-# FOOTNOTE <- 108
+FOOTNOTE <- 226
 
 MIN_NUMBER_CASES <- 3
 
-# doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
-doc <- doc[c(BEGIN:length(doc))]
+doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
+# doc <- doc[c(BEGIN:length(doc))]
+doc
+
+concelhos_to_add <- concat_broke_down_concelhos(doc)
+concelhos_to_add
+
+doc <- c(doc, concelhos_to_add)
 doc
 
 mask_concelho <-
