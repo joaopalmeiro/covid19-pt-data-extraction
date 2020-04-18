@@ -12,7 +12,8 @@ Sys.Date()
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
-PDF_NAME <- paste("38_DGS_boletim_20200409_VERSÃO-FINAL", "pdf", sep = ".")
+PDF_NAME <-
+  paste("38_DGS_boletim_20200409_VERSÃO-FINAL", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
@@ -27,19 +28,40 @@ PAGE_NUMBER <- 3
 
 # pdf_text(PDF_PATH)[[PAGE_NUMBER]]
 
-df_tabulizer <- strsplit(extract_text(PDF_PATH, pages = PAGE_NUMBER), "\n")[[1]]
+df_tabulizer <-
+  strsplit(extract_text(PDF_PATH, pages = PAGE_NUMBER), "\n")[[1]]
 df_tabulizer
 
-doc <-
-  str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
+concat_broke_down_concelhos <- function(df) {
+  concat_concelhos <- character(0)
+  
+  for (i in seq_along(df)) {
+    if (str_detect(df[i], "^[:digit:]+$")) {
+      concelho <- str_squish(paste(df[i - 2], df[i - 1], df[i]))
+      concat_concelhos <- c(concat_concelhos, concelho)
+    }
+  }
+  
+  return(concat_concelhos)
+}
+
+concelhos_to_add <- concat_broke_down_concelhos(df_tabulizer)
+concelhos_to_add
+
+doc <- c(df_tabulizer, concelhos_to_add)
 doc
 
-BEGIN <- 8
-FOOTNOTE <- 108
+# doc <-
+#   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
+# doc
+
+BEGIN <- 14
+# FOOTNOTE <- 108
 
 MIN_NUMBER_CASES <- 3
 
-doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
+# doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
+doc <- doc[c(BEGIN:length(doc))]
 doc
 
 mask_concelho <-
@@ -117,7 +139,8 @@ df <-
   #          "\\*",
   #          convert = FALSE) %>%
   # mutate(reportado_por_ARS_RA = if_else(is.na(reportado_por_ARS_RA), as.integer(0), as.integer(1))) %>%
-  arrange(desc(n_casos), concelho)
+  # arrange(desc(n_casos), concelho)
+  arrange(concelho, desc(n_casos))
 # df <-
 #   df %>% mutate(concelho = replace(concelho, concelho == "António", "Vila Real de Santo António")) %>%
 #   arrange(desc(n_casos), concelho)
