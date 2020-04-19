@@ -13,7 +13,7 @@ PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("39_DGS_boletim_20200410", "pdf", sep = ".")
+  paste("40_DGS_boletim_20200411", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
@@ -46,25 +46,26 @@ concat_broke_down_concelhos <- function(df) {
 }
 
 doc <- df_tabulizer
+doc
 
 # doc <-
 #   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 # doc
 
-BEGIN <- 14
-FOOTNOTE <- 226
+BEGIN <- 12
+# FOOTNOTE <- 226
 
 MIN_NUMBER_CASES <- 3
 
-doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
-# doc <- doc[c(BEGIN:length(doc))]
+# doc <- doc[c(BEGIN:(FOOTNOTE - 1))]
+doc <- doc[c(BEGIN:length(doc))]
 doc
 
-concelhos_to_add <- concat_broke_down_concelhos(doc)
-concelhos_to_add
-
-doc <- c(doc, concelhos_to_add)
-doc
+# concelhos_to_add <- concat_broke_down_concelhos(doc)
+# concelhos_to_add
+#
+# doc <- c(doc, concelhos_to_add)
+# doc
 
 mask_concelho <-
   !is.na(str_match(doc, "[[:alpha:]()\\.]$"))
