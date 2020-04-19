@@ -7,15 +7,15 @@ library(stringr)
 library(tidyverse)
 library(tabulizer)
 
-Sys.Date() - 7
+Sys.Date() - 6
 
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("41_DGS_boletim_20200412", "pdf", sep = ".")
+  paste("42_DGS_boletim_20200413-DGS-259", "pdf", sep = ".")
 PDF_NAME
-DATA_NAME <- paste(Sys.Date() - 7, "csv", sep = ".")
+DATA_NAME <- paste(Sys.Date() - 6, "csv", sep = ".")
 DATA_NAME
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
@@ -34,16 +34,34 @@ df_tabulizer
 
 concat_broke_down_concelhos <- function(df) {
   concat_concelhos <- character(0)
+  to_remove <- integer(0)
   
   for (i in seq_along(df)) {
     if (str_detect(df[i], "^[:digit:]+$")) {
-      concelho <- str_squish(paste(df[i - 2], df[i - 1], df[i]))
+      # concelho <- str_squish(paste(df[i - 2], df[i - 1], df[i]))
+      # concat_concelhos <- c(concat_concelhos, concelho)
+      
+      first_part <-
+        ifelse(str_detect(df[i - 2], "[:digit:]") |
+                 (df[i - 2] %in% c("CONCELHO", "NÚMERO DE", "CASOS")), "", df[i - 2])
+      concelho <- str_squish(paste(first_part, df[i - 1], df[i]))
       concat_concelhos <- c(concat_concelhos, concelho)
+    }
+    
+    else if (!(str_detect(df[i], "[:digit:]")) &
+             (!(df[i] %in% c("CONCELHO", "NÚMERO DE", "CASOS")))) {
+      if (str_detect(df[i + 1], "^[[:alpha:]\\s]+[:digit:]+$")) {
+        concelho <- str_squish(paste(df[i], df[i + 1]))
+        concat_concelhos <- c(concat_concelhos, concelho)
+        to_remove <- c(to_remove, i + 1)
+      }
     }
   }
   
-  return(concat_concelhos)
+  return(list("add_concelhos" = concat_concelhos, "remove_concelhos" = to_remove))
 }
+
+# concat_broke_down_concelhos(df_tabulizer)
 
 doc <- df_tabulizer
 doc
@@ -52,7 +70,7 @@ doc
 #   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 # doc
 
-BEGIN <- 14
+BEGIN <- 13
 # FOOTNOTE <- 226
 
 MIN_NUMBER_CASES <- 3
@@ -61,20 +79,23 @@ MIN_NUMBER_CASES <- 3
 doc <- doc[c(BEGIN:length(doc))]
 doc
 
-concelhos_to_add <- concat_broke_down_concelhos(doc)
-concelhos_to_add
+concelhos_to_add_and_remove <- concat_broke_down_concelhos(doc)
+concelhos_to_add_and_remove
 
-doc <- c(doc, concelhos_to_add)
+doc <- doc[-concelhos_to_add_and_remove$remove_concelhos]
 doc
 
-mask_concelho <-
-  !is.na(str_match(doc, "[[:alpha:]()\\.]$"))
-mask_casos <-
-  !is.na(str_match(doc, "^[:digit:]+$|[:digit:]\\s[:digit:]$"))
-# !is.na(str_match(doc, "^[:digit:]$|[:digit:]\\s[:digit:]$"))
+doc <- c(doc, concelhos_to_add_and_remove$add_concelhos)
+doc
 
-doc[mask_concelho]
-doc[mask_casos]
+# mask_concelho <-
+#   !is.na(str_match(doc, "[[:alpha:]()\\.]$"))
+# mask_casos <-
+#   !is.na(str_match(doc, "^[:digit:]+$|[:digit:]\\s[:digit:]$"))
+#   !is.na(str_match(doc, "^[:digit:]$|[:digit:]\\s[:digit:]$"))
+
+# doc[mask_concelho]
+# doc[mask_casos]
 
 # fix <- doc[append(which(mask_casos), which(mask_casos) - 1)]
 # fix
