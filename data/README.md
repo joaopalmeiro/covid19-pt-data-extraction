@@ -16,4 +16,8 @@ As datas, que constituem os nomes dos vários conjuntos de dados, coincidem com 
 
 ## Potenciais problemas
 
-- `2020-04-02.csv`: O `concelho`de `Penacova` surge duas vezes com `n_casos` distintos.
+- `2020-03-30.csv`: O `concelho` do `Porto` surge com `n_casos` duplicado. Poderão haver outros concelhos na mesma situação. O problema foi "corrigido" no Relatório de Situação do dia seguinte. Mais informação em:
+  - [_31/03/2020 | Conferência de Imprensa COVID-19_](https://youtu.be/OKBZ2XDvvNQ?t=983) (SNS).
+  - [_Covid-19. DGS admite duplicações na contagem de casos no Porto_](https://rr.sapo.pt/2020/03/31/pais/covid-19-dgs-admite-duplicacoes-na-contagem-de-casos-no-porto/noticia/187403/) (Rádio Renascença).
+  - [_Número de recuperados não sobe, mas um erro fez duplicar infetados. O que foi explicado na conferência de imprensa_](https://observador.pt/2020/03/31/numero-de-recuperados-nao-sobe-mas-um-erro-fez-duplicar-infetados-o-que-foi-explicado-na-conferencia-de-imprensa/) (Observador).
+- `2020-04-02.csv`: O `concelho` de `Penacova` surge duas vezes com `n_casos` distintos.
