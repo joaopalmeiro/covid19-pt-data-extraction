@@ -7,15 +7,15 @@ library(stringr)
 library(tidyverse)
 library(tabulizer)
 
-Sys.Date()
+Sys.Date() - 7
 
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("40_DGS_boletim_20200411", "pdf", sep = ".")
+  paste("41_DGS_boletim_20200412", "pdf", sep = ".")
 PDF_NAME
-DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
+DATA_NAME <- paste(Sys.Date() - 7, "csv", sep = ".")
 DATA_NAME
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
@@ -52,7 +52,7 @@ doc
 #   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 # doc
 
-BEGIN <- 12
+BEGIN <- 14
 # FOOTNOTE <- 226
 
 MIN_NUMBER_CASES <- 3
@@ -61,11 +61,11 @@ MIN_NUMBER_CASES <- 3
 doc <- doc[c(BEGIN:length(doc))]
 doc
 
-# concelhos_to_add <- concat_broke_down_concelhos(doc)
-# concelhos_to_add
-#
-# doc <- c(doc, concelhos_to_add)
-# doc
+concelhos_to_add <- concat_broke_down_concelhos(doc)
+concelhos_to_add
+
+doc <- c(doc, concelhos_to_add)
+doc
 
 mask_concelho <-
   !is.na(str_match(doc, "[[:alpha:]()\\.]$"))
