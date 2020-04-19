@@ -7,15 +7,15 @@ library(stringr)
 library(tidyverse)
 library(tabulizer)
 
-Sys.Date() - 5
+Sys.Date() - 4
 
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("43_DGS_boletim_20200414", "pdf", sep = ".")
+  paste("44_DGS_boletim_20200415", "pdf", sep = ".")
 PDF_NAME
-DATA_NAME <- paste(Sys.Date() - 5, "csv", sep = ".")
+DATA_NAME <- paste(Sys.Date() - 4, "csv", sep = ".")
 DATA_NAME
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
@@ -36,6 +36,8 @@ concat_broke_down_concelhos <- function(df) {
   concat_concelhos <- character(0)
   to_remove <- integer(0)
   
+  stop_words <- c("CONCELHO", "NÚMERO DE", "CASOS", "DE CASOS")
+  
   for (i in seq_along(df)) {
     if (str_detect(df[i], "^[:digit:]+$")) {
       # concelho <- str_squish(paste(df[i - 2], df[i - 1], df[i]))
@@ -43,13 +45,15 @@ concat_broke_down_concelhos <- function(df) {
       
       first_part <-
         ifelse(str_detect(df[i - 2], "[:digit:]") |
-                 (df[i - 2] %in% c("CONCELHO", "NÚMERO DE", "CASOS")), "", df[i - 2])
+                 (df[i - 2] %in% stop_words),
+               "",
+               df[i - 2])
       concelho <- str_squish(paste(first_part, df[i - 1], df[i]))
       concat_concelhos <- c(concat_concelhos, concelho)
     }
     
     else if (!(str_detect(df[i], "[:digit:]")) &
-             (!(df[i] %in% c("CONCELHO", "NÚMERO DE", "CASOS")))) {
+             (!(df[i] %in% stop_words))) {
       if (str_detect(df[i + 1], "^[[:alpha:]\\s]+[:digit:]+$")) {
         concelho <- str_squish(paste(df[i], df[i + 1]))
         concat_concelhos <- c(concat_concelhos, concelho)
@@ -70,7 +74,7 @@ doc
 #   str_squish(strsplit(pdf_text(PDF_PATH)[[PAGE_NUMBER]], "\n")[[1]])
 # doc
 
-BEGIN <- 13
+BEGIN <- 14
 # FOOTNOTE <- 226
 
 MIN_NUMBER_CASES <- 3
@@ -84,11 +88,13 @@ concelhos_to_add_and_remove
 
 if (length(concelhos_to_add_and_remove$remove_concelhos) > 0) {
   doc <- doc[-concelhos_to_add_and_remove$remove_concelhos]
-  doc 
+  doc
 }
 
-doc <- c(doc, concelhos_to_add_and_remove$add_concelhos)
-doc
+if (length(concelhos_to_add_and_remove$add_concelhos) > 0) {
+  doc <- c(doc, concelhos_to_add_and_remove$add_concelhos)
+  doc
+}
 
 # mask_concelho <-
 #   !is.na(str_match(doc, "[[:alpha:]()\\.]$"))
