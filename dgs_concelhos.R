@@ -7,15 +7,15 @@ library(stringr)
 library(tidyverse)
 library(tabulizer)
 
-Sys.Date() - 6
+Sys.Date() - 5
 
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("42_DGS_boletim_20200413-DGS-259", "pdf", sep = ".")
+  paste("43_DGS_boletim_20200414", "pdf", sep = ".")
 PDF_NAME
-DATA_NAME <- paste(Sys.Date() - 6, "csv", sep = ".")
+DATA_NAME <- paste(Sys.Date() - 5, "csv", sep = ".")
 DATA_NAME
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
@@ -82,8 +82,10 @@ doc
 concelhos_to_add_and_remove <- concat_broke_down_concelhos(doc)
 concelhos_to_add_and_remove
 
-doc <- doc[-concelhos_to_add_and_remove$remove_concelhos]
-doc
+if (length(concelhos_to_add_and_remove$remove_concelhos) > 0) {
+  doc <- doc[-concelhos_to_add_and_remove$remove_concelhos]
+  doc 
+}
 
 doc <- c(doc, concelhos_to_add_and_remove$add_concelhos)
 doc
