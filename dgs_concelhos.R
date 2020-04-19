@@ -7,15 +7,15 @@ library(stringr)
 library(tidyverse)
 library(tabulizer)
 
-Sys.Date() - 1
+Sys.Date()
 
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("47_DGS_boletim_20200418", "pdf", sep = ".")
+  paste("48_DGS_boletim_20200419", "pdf", sep = ".")
 PDF_NAME
-DATA_NAME <- paste(Sys.Date() - 1, "csv", sep = ".")
+DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
