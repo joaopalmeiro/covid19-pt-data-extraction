@@ -7,15 +7,15 @@ library(stringr)
 library(tidyverse)
 library(tabulizer)
 
-Sys.Date() - 4
+Sys.Date() - 3
 
 PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("44_DGS_boletim_20200415", "pdf", sep = ".")
+  paste("45_DGS_boletim_20200416-FINAL", "pdf", sep = ".")
 PDF_NAME
-DATA_NAME <- paste(Sys.Date() - 4, "csv", sep = ".")
+DATA_NAME <- paste(Sys.Date() - 3, "csv", sep = ".")
 DATA_NAME
 
 PDF_PATH <- file.path(PDF_FOLDER_NAME, PDF_NAME)
@@ -36,7 +36,7 @@ concat_broke_down_concelhos <- function(df) {
   concat_concelhos <- character(0)
   to_remove <- integer(0)
   
-  stop_words <- c("CONCELHO", "NÚMERO DE", "CASOS", "DE CASOS")
+  stop_words <- c("CONCELHO", "NÚMERO", "NÚMERO DE", "CASOS", "DE CASOS")
   
   for (i in seq_along(df)) {
     if (str_detect(df[i], "^[:digit:]+$")) {
@@ -194,5 +194,6 @@ if (nrow(duplicated_concelhos) > 0) {
   cat("No duplicates.")
 }
 
+# Save
 DATA_PATH
 # write_csv(df, DATA_PATH)
