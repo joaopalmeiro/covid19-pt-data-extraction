@@ -13,7 +13,7 @@ PDF_FOLDER_NAME <- "pdf"
 DATA_FOLDER_NAME <- "data"
 
 PDF_NAME <-
-  paste("48_DGS_boletim_20200419", "pdf", sep = ".")
+  paste("49_DGS_boletim_202004201", "pdf", sep = ".")
 PDF_NAME
 DATA_NAME <- paste(Sys.Date(), "csv", sep = ".")
 DATA_NAME
